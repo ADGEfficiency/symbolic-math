@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     fails = 0
     dataset = []
-    for _ in range(process_runs*cpu):
+    for iteration in range(process_runs):
         try:
             out = ray_generate_bwd.remote(sequences_per_process)
             out = ray.get(out, timeout=sequences_per_process)
@@ -57,6 +57,8 @@ if __name__ == '__main__':
         except (TypeError, RayTimeoutError) as e:
             print('fail', e)
             fails += 1
+
+        print('total fails {} at iteration {}'.format(fails, iteration))
 
     print(time.time() - t0)
     print(len(dataset))
